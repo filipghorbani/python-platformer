@@ -1,21 +1,22 @@
 import pygame
+import sys
+import globals
 from player import Player
 
-# Globals
-BLACK = (0, 0, 0)
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+# Center the window on display
+import os
+os.environ['SDL_VIDEO_CENTERED'] = '1'
 
 
 def main():
 
     pygame.init()
     screen = pygame.display.set_mode(
-        (SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+        (globals.SCREEN_WIDTH, globals.SCREEN_HEIGHT))
     pygame.display.set_caption('Test')
 
     all_sprites = pygame.sprite.Group()
-    player = Player(50, 50)
+    player = Player(globals.SCREEN_WIDTH/2, 100)
     all_sprites.add(player)
 
     clock = pygame.time.Clock()
@@ -32,7 +33,6 @@ def main():
                     player.move(1)
                 if event.key == pygame.K_UP:
                     player.jump()
-
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
                     player.move(1)

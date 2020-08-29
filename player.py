@@ -1,7 +1,5 @@
 import pygame
-
-# Globals
-WHITE = (255, 255, 255)
+import globals
 
 
 class Player(pygame.sprite.Sprite):
@@ -10,8 +8,8 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
 
         # Set height, width
-        self.image = pygame.Surface([15, 15])
-        self.image.fill(WHITE)
+        self.image = pygame.Surface([25, 50])
+        self.image.fill(globals.WHITE)
 
         # Set position
         self.rect = self.image.get_rect()
@@ -27,7 +25,7 @@ class Player(pygame.sprite.Sprite):
         self.change_x += x * self.speed
 
     def jump(self):
-        if self.rect.bottom >= 600:
+        if self.rect.bottom >= globals.SCREEN_HEIGHT:
             self.change_y = -10
 
     def gravity(self):
@@ -36,9 +34,9 @@ class Player(pygame.sprite.Sprite):
         else:
             self.change_y += .35
 
-        if self.rect.bottom >= 600 and self.change_y >= 0:
+        if self.rect.bottom >= globals.SCREEN_HEIGHT and self.change_y >= 0:
             self.change_y = 0
-            self.rect.bottom = 600
+            self.rect.bottom = globals.SCREEN_HEIGHT
 
     def update(self):
         self.gravity()
