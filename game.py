@@ -2,6 +2,7 @@ import pygame
 import sys
 import globals
 from player import Player
+from platform import Platform
 
 # Center the window on display
 import os
@@ -16,7 +17,14 @@ def main():
     pygame.display.set_caption('Test')
 
     all_sprites = pygame.sprite.Group()
+    platform_sprites = pygame.sprite.Group()
+
+    platform = Platform(500, 800, 500, 20)
+    all_sprites.add(platform)
+    platform_sprites.add(platform)
+
     player = Player(globals.SCREEN_WIDTH/2, 100)
+    player.platforms = platform_sprites
     all_sprites.add(player)
 
     clock = pygame.time.Clock()

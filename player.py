@@ -25,7 +25,11 @@ class Player(pygame.sprite.Sprite):
         self.change_x += x * self.speed
 
     def jump(self):
-        if self.rect.bottom >= globals.SCREEN_HEIGHT:
+        self.rect.y += 2
+        hit_platforms = pygame.sprite.spritecollide(
+            self, self.platforms, False)
+        self.rect.y -= 2
+        if self.rect.bottom >= globals.SCREEN_HEIGHT or len(hit_platforms) > 0:
             self.change_y = -10
 
     def gravity(self):
@@ -39,8 +43,21 @@ class Player(pygame.sprite.Sprite):
             self.rect.bottom = globals.SCREEN_HEIGHT
 
     def update(self):
+
         self.gravity()
         # Move left/right
         self.rect.x += self.change_x
+        for platform in pygame.sprite.spritecollide(self, self.platforms, False):
+            if self.change_x > 0:
+                self.rect.right = platform.rect.left
+            else:
+                self.rect.left = platform.rect.right
         # Move up/down
         self.rect.y += self.change_y
+        for platform in pygame.sprite.spritecollide(self, self.platforms, False):
+            if self.change_y > 0:
+                self.rect.bottom = platform.rect.top
+                self.change_y = 0
+            else:
+                self.rect.top = platform.rect.bottom
+                self.change_y = 0

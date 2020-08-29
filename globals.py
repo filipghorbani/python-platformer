@@ -1,5 +1,6 @@
 # Globals
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+BLUE = (0, 0, 125)
 SCREEN_WIDTH = 1400
 SCREEN_HEIGHT = 900
