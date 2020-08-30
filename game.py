@@ -19,8 +19,14 @@ def main():
 
     # Create sprite groups
     all_sprites = pygame.sprite.Group()
+    player_sprites = pygame.sprite.Group()
     platform_sprites = pygame.sprite.Group()
-    bullets = pygame.sprite.Group()
+    gun_sprites = pygame.sprite.Group()
+    bullet_sprites = pygame.sprite.Group()
+
+    # Put all sprite groups in a Dictionary
+    groups = {"all": all_sprites, "players": player_sprites,
+              "platforms": platform_sprites, "guns": gun_sprites, "bullets": bullet_sprites}
 
     # Create platforms
     platform = Platform(450, 700, 500, 20)
@@ -35,11 +41,18 @@ def main():
     platform = Platform(450, 300, 500, 20)
     all_sprites.add(platform)
     platform_sprites.add(platform)
+    platform = Platform(0, 0, 20, 1000)
+    all_sprites.add(platform)
+    platform_sprites.add(platform)
 
     # Create player
-    player = Player(globals.SCREEN_WIDTH/2, 500)
-    player.platforms = platform_sprites
-    all_sprites.add(player)
+    player_one = Player(globals.SCREEN_WIDTH/2+100, 500, globals.RED)
+    player_one.platforms = platform_sprites
+    all_sprites.add(player_one)
+
+    player_two = Player(globals.SCREEN_WIDTH/2-100, 500, globals.BLUE)
+    player_two.platforms = platform_sprites
+    all_sprites.add(player_two)
 
     clock = pygame.time.Clock()
 
@@ -49,21 +62,39 @@ def main():
             if event.type == pygame.QUIT:
                 done = True
             elif event.type == pygame.KEYDOWN:
+                # Player One
                 if event.key == pygame.K_LEFT:
-                    player.move(-1)
-                    player.facing = "left"
+                    player_one.move(-1)
+                    player_one.facing = "left"
                 if event.key == pygame.K_RIGHT:
-                    player.move(1)
-                    player.facing = "right"
+                    player_one.move(1)
+                    player_one.facing = "right"
                 if event.key == pygame.K_UP:
-                    player.jump()
+                    player_one.jump()
+                # Player Two
+                if event.key == pygame.K_a:
+                    player_two.move(-1)
+                    player_two.facing = "left"
+                if event.key == pygame.K_d:
+                    player_two.move(1)
+                    player_two.facing = "right"
+                if event.key == pygame.K_w:
+                    player_two.jump()
             elif event.type == pygame.KEYUP:
+                # Player One
                 if event.key == pygame.K_LEFT:
-                    player.move(1)
+                    player_one.move(1)
                 if event.key == pygame.K_RIGHT:
-                    player.move(-1)
-                if event.key == pygame.K_SPACE:
-                    player.shoot(bullets, all_sprites)
+                    player_one.move(-1)
+                if event.key == pygame.K_RCTRL:
+                    player_one.shoot(groups)
+                # Player Two
+                if event.key == pygame.K_a:
+                    player_two.move(1)
+                if event.key == pygame.K_d:
+                    player_two.move(-1)
+                if event.key == pygame.K_LCTRL:
+                    player_two.shoot(groups)
 
         all_sprites.update()
         screen.fill(globals.GREY)

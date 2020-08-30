@@ -12,3 +12,6 @@ class Platform(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+
+    def test(self):
+        self.image.fill(globals.RED)
