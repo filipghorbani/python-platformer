@@ -7,7 +7,7 @@ class Platform(pygame.sprite.Sprite):
         super().__init__()
 
         self.image = pygame.Surface([w, h])
-        self.image.fill(globals.BLUE)
+        self.image.fill(globals.BLACK)
 
         self.rect = self.image.get_rect()
         self.rect.x = x
