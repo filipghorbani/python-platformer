@@ -29,28 +29,23 @@ def main():
               "platforms": platform_sprites, "guns": gun_sprites, "bullets": bullet_sprites}
 
     # Create platforms
-    platform = Platform(450, 700, 500, 20)
+    platform = Platform((globals.GRID_WIDTH/2-2)*globals.TILESIZE, globals.SCREEN_HEIGHT -
+                        globals.TILESIZE*3, globals.TILESIZE*4, globals.TILESIZE)
     all_sprites.add(platform)
     platform_sprites.add(platform)
-    platform = Platform(250, 500, 250, 20)
-    all_sprites.add(platform)
-    platform_sprites.add(platform)
-    platform = Platform(900, 500, 250, 20)
-    all_sprites.add(platform)
-    platform_sprites.add(platform)
-    platform = Platform(450, 300, 500, 20)
-    all_sprites.add(platform)
-    platform_sprites.add(platform)
-    platform = Platform(0, 0, 20, 1000)
+    platform = Platform(globals.SCREEN_WIDTH/2, 0, 1,
+                        globals.TILESIZE*globals.GRID_HEIGHT)
     all_sprites.add(platform)
     platform_sprites.add(platform)
 
     # Create player
-    player_one = Player(globals.SCREEN_WIDTH/2+100, 500, globals.RED)
+    player_one = Player(globals.GRID_WIDTH/2 *
+                        globals.TILESIZE-globals.TILESIZE, 500, globals.RED)
     player_one.platforms = platform_sprites
     all_sprites.add(player_one)
 
-    player_two = Player(globals.SCREEN_WIDTH/2-100, 500, globals.BLUE)
+    player_two = Player(globals.GRID_WIDTH/2 *
+                        globals.TILESIZE, 500, globals.BLUE)
     player_two.platforms = platform_sprites
     all_sprites.add(player_two)
 

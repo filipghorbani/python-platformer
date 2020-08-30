@@ -9,7 +9,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
 
         # Set height, width
-        self.image = pygame.Surface([25, 50])
+        self.image = pygame.Surface([globals.TILESIZE, globals.TILESIZE*2])
         self.image.fill(color)
 
         # Set position
