@@ -1,17 +1,17 @@
 import pygame
-import globals
+from globals import *
 
 
 class Platform(pygame.sprite.Sprite):
     def __init__(self, x, y, w, h):
         super().__init__()
 
-        self.image = pygame.Surface([w, h])
-        self.image.fill(globals.BLACK)
-
-        self.rect = self.image.get_rect()
+        self.rect = pygame.Rect(x, y, w, h)
         self.rect.x = x
         self.rect.y = y
 
-    def test(self):
-        self.image.fill(globals.RED)
+    def hit(self, bullet):
+        bullet.kill()
+
+    def draw(self):
+        pass

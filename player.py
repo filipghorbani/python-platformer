@@ -1,5 +1,5 @@
 import pygame
-import globals
+from globals import *
 
 
 class Player(pygame.sprite.Sprite):
@@ -9,7 +9,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
 
         # Set height, width
-        self.image = pygame.Surface([globals.TILESIZE, globals.TILESIZE*2])
+        self.image = pygame.Surface([TILESIZE/2, TILESIZE])
         self.image.fill(color)
 
         # Set position
@@ -18,13 +18,14 @@ class Player(pygame.sprite.Sprite):
         self.rect.x = x
 
         # Set speed
-        self.speed = 6
+        self.speed = 4
         self.change_x = 0
         self.change_y = 0
 
         self.facing = "left"
         self.gun = Gun(10, 10, 15, 15)
         self.hp = 10
+        self.alive = True
 
     def move(self, x):
 
@@ -39,8 +40,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.y -= 2
 
         # Check if standing on the ground
-        if self.rect.bottom >= globals.SCREEN_HEIGHT or len(hit_platforms) > 0:
-            self.change_y = -13
+        if self.rect.bottom >= SCREEN_HEIGHT or len(hit_platforms) > 0:
+            self.change_y = -7
 
     def gravity(self):
 
@@ -49,15 +50,15 @@ class Player(pygame.sprite.Sprite):
         else:
             self.change_y += .35
 
-        if self.rect.bottom >= globals.SCREEN_HEIGHT and self.change_y >= 0:
+        if self.rect.bottom >= SCREEN_HEIGHT and self.change_y >= 0:
             self.change_y = 0
-            self.rect.bottom = globals.SCREEN_HEIGHT
+            self.rect.bottom = SCREEN_HEIGHT
 
-    def shoot(self, groups):
+    def shoot(self, all_sprites, platforms):
 
         # Shoot only if player has a gun
         if self.gun != None:
-            self.gun.shoot(self, groups)
+            self.gun.shoot(self, all_sprites, platforms)
 
     def update(self):
 
@@ -86,6 +87,13 @@ class Player(pygame.sprite.Sprite):
                 self.rect.top = platform.rect.bottom
                 self.change_y = -self.change_y/2
 
+    def hit(self, bullet):
+        self.hp -= 1
+        if self.hp < 1:
+            self.kill()
+            self.alive = False
+        bullet.kill()
+
 
 class Gun(pygame.sprite.Sprite):
 
@@ -98,20 +106,23 @@ class Gun(pygame.sprite.Sprite):
         self.bullet_width = bullet_width
         self.bullet_height = bullet_height
 
-    def shoot(self, player, groups):
+    def shoot(self, player, all_sprites, platforms):
 
         # Create bullet and add it to sprite groups
-        bullet = Bullet(player.rect.x if player.facing == "left" else player.rect.right, player.rect.centery, self.bullet_width, self.bullet_height,
+        bullet = Bullet(player.rect.x-self.bullet_width if player.facing == "left" else player.rect.right+self.bullet_width, player.rect.top, self.bullet_width, self.bullet_height,
                         1 if player.facing == "right" else -1, self.bullet_speed)
-        groups["all"].add(bullet)
-        groups["bullets"].add(bullet)
-        bullet.groups = groups
+        all_sprites.add(bullet)
+        bullet.sprites = all_sprites
+        bullet.platforms = platforms
         self.bullet_capacity -= 1
 
         # Remove gun if no bullets left in the gun
         if self.bullet_capacity < 1:
             player.gun = None
             self.kill()
+
+    def hit(self, bullet):
+        pass
 
 
 class Bullet(pygame.sprite.Sprite):
@@ -122,7 +133,7 @@ class Bullet(pygame.sprite.Sprite):
 
         # Set height, width
         self.image = pygame.Surface([width, height])
-        self.image.fill(globals.BLACK)
+        self.image.fill(WHITE)
 
         # Set position
         self.rect = self.image.get_rect()
@@ -146,12 +157,19 @@ class Bullet(pygame.sprite.Sprite):
         # Wraps bullet on the map
         '''
         if self.rect.right < 0:
-            self.rect.left = globals.SCREEN_WIDTH
-        elif self.rect.left > globals.SCREEN_WIDTH:
+            self.rect.left = SCREEN_WIDTH
+        elif self.rect.left > SCREEN_WIDTH:
             self.rect.right = 0
         '''
 
         # Check if bullet hit a platform
-        for platform in pygame.sprite.spritecollide(self, self.groups["platforms"], False):
-            self.kill()
-            platform.kill()
+        for platform in pygame.sprite.spritecollide(self, self.platforms, False):
+            platform.hit(self)
+
+        for hit_object in pygame.sprite.spritecollide(self, self.sprites, False):
+            if hit_object != self:
+                hit_object.hit(self)
+
+    def hit(self, bullet):
+        bullet.kill()
+        self.kill()
